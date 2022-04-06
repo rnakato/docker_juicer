@@ -2,7 +2,7 @@
 cmdname=`basename $0`
 function usage()
 {
-    echo "$cmdname <command> <norm> <matrixdir> <hic file> <binsize> <genometable> <refFlat>" 1>&2
+    echo "$cmdname <command [Pearson|Eigen]> <norm> <odir> <hic file> <resolution> <genometable> <refFlat>" 1>&2
 }
 
 if [ $# -ne 7 ]; then
@@ -19,7 +19,6 @@ gt=$6
 gene=$7
 
 pwd=$(cd $(dirname $0) && pwd)
-juicertool="juicertools.sh"
 chrlist=$(getchr_from_genometable.sh $gt)
 
 dir=$matrixdir/Eigen/$binsize
@@ -28,16 +27,14 @@ mkdir -p $dir
 ex(){ echo $1; eval $1; }
 
 getPearson(){
-    #    ex "$juicertool pearsons -p $norm $hic chr$chr BP $binsize $dir/pearson.$norm.chr$chr.matrix"
-    $juicertool pearsons -p $norm $hic chr$chr BP $binsize $dir/pearson.$norm.chr$chr.matrix
+    juicertools.sh pearsons -p $norm $hic chr$chr BP $binsize $dir/pearson.$norm.chr$chr.matrix
     if test -s $dir/pearson.$norm.chr$chr.matrix; then
 	    gzip -f $dir/pearson.$norm.chr$chr.matrix
     fi
 }
 
 getEigen(){
-    #    ex "$juicertool eigenvector -p $norm $hic chr$chr BP $binsize $dir/eigen.$norm.chr$chr.txt"
-    $juicertool eigenvector -p $norm $hic chr$chr BP $binsize $dir/eigen.$norm.chr$chr.txt
+    juicertools.sh eigenvector -p $norm $hic chr$chr BP $binsize $dir/eigen.$norm.chr$chr.txt
     $pwd/fixEigendir.py $dir/eigen.$norm.chr$chr.txt \
 			            $dir/eigen.$norm.chr$chr.txt.temp \
 			            $gene \

@@ -1,5 +1,16 @@
-#!/bin/bash
-juicertool="juicertools.sh"
+#!/bin/bash -e
+cmdname=`basename $0`
+function usage()
+{
+    echo "$cmdname <norm> <hic> <odir> <gt>" 1>&2
+}
+
+if [ $# -ne 4 ]; then
+  usage
+  exit 1
+fi
+
+
 
 norm=$1
 hic=$2
@@ -11,7 +22,7 @@ mkdir -p $dir
 
 for res in 10000 25000 50000; do
     if test ! -e $dir/${res}_blocks.bedpe; then
-        $juicertool arrowhead -m 2000 -r $res --threads 24 -k $norm $hic $dir # --ignore_sparsity
+        juicertools.sh arrowhead -m 2000 -r $res --threads 24 -k $norm $hic $dir # --ignore_sparsity
     fi
 
     # make TAD bed

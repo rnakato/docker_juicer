@@ -1,6 +1,37 @@
-Datadir=/work/Database
-ncore=32
+cmdname=`basename $0`
+function usage()
+{
+    echo "$cmdname  [-d Datadir] [-p ncore] <odir> <build> <enzyme> <fastq_post [_|_R]>" 1>&2
+}
 
+if [ $# -ne 4 ]; then
+  usage
+  exit 1
+fi
+
+ncore=32
+Datadir=/work/Database
+while getopts d: option
+do
+    case ${option} in
+        d)
+            Datadir=${OPTARG}
+            ;;
+        p)
+            ncore==${OPTARG}
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -ne 4 ]; then
+  usage
+  exit 1
+fi
 
 odir=$1
 label=$(basename $odir)
