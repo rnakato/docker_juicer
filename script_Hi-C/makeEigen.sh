@@ -73,20 +73,22 @@ do
 
     chr=$(echo $chr | sed -e 's/chr//g')
     if test $command = "Pearson"; then
-	    if test ! -e $dir/pearson.$norm.chr$chr.matrix.gz; then
-	        getPearson
-	    fi
+	if test ! -e $dir/pearson.$norm.chr$chr.matrix.gz; then
+	    getPearson
+	fi
     else
-	    if test ! -e $dir/eigen.$norm.chr$chr.txt.gz; then
-	        getEigen
+	if test ! -e $dir/eigen.$norm.chr$chr.txt.gz; then
+	    getEigen
         fi
         classifyCompartment.py $dir/eigen.$norm.chr$chr.txt.gz $dir/Compartment.$norm.chr$chr chr$chr $binsize
         toBed12 $dir/Compartment.$norm.chr$chr
     fi
 done
 
-for str in A B All StrongA WeakA WeakB StrongB
-do
-    cat $dir/Compartment.$norm.chr*.$str.bed   > $dir/Compartment.$norm.genome.$str.bed
-    cat $dir/Compartment.$norm.chr*.$str.bed12 > $dir/Compartment.$norm.genome.$str.bed12
-done
+if test $command = "Eigen"; then
+    for str in A B All StrongA WeakA WeakB StrongB
+    do
+	cat $dir/Compartment.$norm.chr*.$str.bed   > $dir/Compartment.$norm.genome.$str.bed
+	cat $dir/Compartment.$norm.chr*.$str.bed12 > $dir/Compartment.$norm.genome.$str.bed12
+    done
+fi

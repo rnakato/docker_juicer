@@ -1,3 +1,4 @@
+#!/bin/bash -e
 cmdname=`basename $0`
 function usage()
 {
