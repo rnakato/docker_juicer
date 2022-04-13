@@ -47,7 +47,3 @@ bwaindex=$Datadir/bwa-indexes/UCSC-$build
 bash $jdir/CPU/juicer.sh -t $ncore -g $build -d $odir \
      -s $enzyme -a $label -p $gt \
      -z $bwaindex -D $jdir -e $fastq_post -S map
-
-bash $jdir/CPU/juicer.sh -t $ncore -g $build -d $odir \
-     -s $enzyme -a $label -p $gt \
-     -z $bwaindex -D $jdir -e $fastq_post -S aftermap
