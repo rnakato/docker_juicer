@@ -10,14 +10,14 @@ For Docker:
 
     # container login
     docker run [--gpus all] --rm -it rnakato/juicer /bin/bash
-    # jupyter notebook
+    # execute a command
     docker run [--gpus all] --rm -p 8888:8888 -v (your directory):/opt/work rnakato/juicer <command>
 
 For Singularity:
 
     # build image
     singularity build -F rnakato_juicer.sif docker://rnakato/juicer 
-    # jupyter notebook
+    # execute a command
     singularity exec [--nv] rnakato_juicer.sif <command>
 
 ## Usage
