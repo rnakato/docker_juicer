@@ -11,7 +11,7 @@ For Docker:
     # container login
     docker run [--gpus all] --rm -it rnakato/juicer /bin/bash
     # execute a command
-    docker run [--gpus all] --rm -p 8888:8888 -v (your directory):/opt/work rnakato/juicer <command>
+    docker run [--gpus all] --rm -v (your directory):/opt/work rnakato/juicer <command>
 
 For Singularity:
 
