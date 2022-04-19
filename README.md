@@ -27,7 +27,7 @@ The outputs are stored in `JuicerResults/$cell`.
 
 The BWA index files should be at `/work/Database/bwa-indexes/UCSC-$build`.
 
-The whole commands using the Singularity image (rnakato_juicer.sif) are as follows:
+The whole commands using the Singularity image (`rnakato_juicer.sif`) are as follows:
 
     build=hg38
     fastq_post="_R"  # "_" or "_R"  before .fastq.gz
