@@ -25,7 +25,7 @@ For Singularity:
 These scripts assume that the fastq files are stored in `fastq/$cell` (e.g., `fastq/Control_1`).
 The outputs are stored in `JuicerResults/$cell`.
 
-The BWA index files should be at /work/Database/bwa-indexes/UCSC-hg38.
+The BWA index files should be at `/work/Database/bwa-indexes/UCSC-$build`.
 
 The whole commands using the Singularity image (rnakato_juicer.sif) are as follows:
 
