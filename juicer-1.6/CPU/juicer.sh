@@ -119,7 +119,7 @@ printHelpAndExit() {
     exit "$1"
 }
 
-while getopts "d:g:a:hs:p:y:z:S:D:fjqt:b:e:" opt; do
+while getopts "d:g:a:hs:p:y:z:S:D:fjqt:b:e:m:" opt; do
     case $opt in
 	g) genomeID=$OPTARG ;;
 	h) printHelpAndExit 0;;
@@ -139,6 +139,7 @@ while getopts "d:g:a:hs:p:y:z:S:D:fjqt:b:e:" opt; do
 	j) justexact=1 ;;
 	q) earlyexit=1 ;;
 	e) fastqnameend=$OPTARG ;;
+	m) tmpdir=$OPTARG ;;
 	[?]) printHelpAndExit 1;;
     esac
 done
@@ -253,7 +254,10 @@ donesplitdir=$topDir"/done_splits"
 #fastqdir=${topDir}"/fastq/*_R*.fastq*"
 fastqdir=${topDir}"/fastq/*${fastqnameend}[12].fastq.gz"
 outputdir=${topDir}"/aligned"
-tmpdir=${topDir}"/HIC_tmp"
+
+if [ -z "$tmpdir" ]; then
+    tmpdir=${topDir}"/HIC_tmp"
+fi
 
 ## Check that fastq directory exists and has proper fastq files
 if [ ! -d "$topDir/fastq" ]; then
@@ -410,7 +414,8 @@ then
             exit 1
 	fi
         # sort by chromosome, fragment, strand, and position
-	sort -T $tmpdir -k2,2d -k6,6d -k4,4n -k8,8n -k1,1n -k5,5n -k3,3n $name${ext}.frag.txt > $name${ext}.sort.txt
+	echo "sort --parallel=$threads -T $tmpdir -k2,2d -k6,6d -k4,4n -k8,8n -k1,1n -k5,5n -k3,3n $name${ext}.frag.txt > $name${ext}.sort.txt"
+	sort --parallel=$threads -T $tmpdir -k2,2d -k6,6d -k4,4n -k8,8n -k1,1n -k5,5n -k3,3n $name${ext}.frag.txt > $name${ext}.sort.txt
 	if [ $? -ne 0 ]
 	then
             echo "***! Failure during sort of $name${ext}"
@@ -428,7 +433,7 @@ then
     then
         mv $donesplitdir/* $splitdir/.
     fi
-    if ! sort -T $tmpdir -m -k2,2d -k6,6d -k4,4n -k8,8n -k1,1n -k5,5n -k3,3n $splitdir/*.sort.txt  > $outputdir/merged_sort.txt
+    if ! sort --parallel=$threads -T $tmpdir -m -k2,2d -k6,6d -k4,4n -k8,8n -k1,1n -k5,5n -k3,3n $splitdir/*.sort.txt  > $outputdir/merged_sort.txt
     then
         echo "***! Some problems occurred somewhere in creating sorted align files."
         exit 1
@@ -469,7 +474,7 @@ then
     cat $splitdir/*_unmapped.sam > $outputdir/unmapped.sam
     awk -f ${juiceDir}/scripts/common/collisions.awk $outputdir/abnormal.sam > $outputdir/collisions.txt
     # Collisions dedupping: two pass algorithm, ideally would make one pass
-    gawk -v fname=$outputdir/collisions.txt -f ${juiceDir}/scripts/common/collisions_dedup_rearrange_cols.awk $outputdir/collisions.txt | sort -k3,3n -k4,4n -k10,10n -k11,11n -k17,17n -k18,18n -k24,24n -k25,25n -k31,31n -k32,32n | awk -v name=$outputdir/ -f ${juiceDir}/scripts/common/collisions_dups.awk
+    gawk -v fname=$outputdir/collisions.txt -f ${juiceDir}/scripts/common/collisions_dedup_rearrange_cols.awk $outputdir/collisions.txt | sort --parallel=$threads -k3,3n -k4,4n -k10,10n -k11,11n -k17,17n -k18,18n -k24,24n -k25,25n -k31,31n -k32,32n | awk -v name=$outputdir/ -f ${juiceDir}/scripts/common/collisions_dups.awk
 fi
 
 if [ -z "$genomePath" ]
